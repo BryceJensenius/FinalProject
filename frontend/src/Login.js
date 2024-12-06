@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+
 const Authentication = ({ username, setUsername, password, setPassword, setUserRole }) => {
     const [error, setError] = useState("");
 

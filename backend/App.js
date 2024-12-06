@@ -162,7 +162,7 @@ app.post("/user/login", (req, res) => {
         return res.status(400).send({ error: "Username and password are required." });
     }
 
-    const query = "SELECT role FROM user WHERE user = ? AND password = ?";
+    const query = "SELECT role FROM user WHERE name = ? AND password = ?";
 
     try{
         db.query(query, [username, password], (err, results) => {

@@ -3,21 +3,6 @@ import React from 'react';
 const About = ({ cards, setCards }) => {
   return (
     <div className="backgroundWithImage">
-      <header id="heading">
-        <nav className="headNav" id="headNavElem">
-          <button id="toggleNav" className="hamburger">
-            <div className="line"></div>
-            <div className="line"></div>
-            <div className="line"></div>
-          </button>
-          <ul id="navItems">
-            <li><a href="./index.html">Home</a></li>
-            <li><a href="./getInvolved.html">Get Involved</a></li>
-            <li><a href="./funzone.html">Fun Zone</a></li>
-            <li><a href="./about.html" className="currentPageIcon">Contact</a></li>
-          </ul>
-        </nav>
-      </header>
 
       <div className="verticalPageDivider">
         <div className="elementWithColorBackground">
@@ -85,14 +70,6 @@ const About = ({ cards, setCards }) => {
 
       <footer className="text-body-secondary py-3">
         <div className="container">
-          <nav>
-            <ul className="nav justify-content-center border-bottom pb-3 mb-3">
-              <li><a href="./index.html">About</a></li>
-              <li><a href="./getInvolved.html">Get Involved</a></li>
-              <li><a href="./funzone.html">Fun Zone</a></li>
-              <li><a href="./about.html">Contact</a></li>
-            </ul>
-          </nav>
           <footer>
             <p>Follow us at:</p>
             <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer"><i className="fab fa-facebook-f"></i></a>

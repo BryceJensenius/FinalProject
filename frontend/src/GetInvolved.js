@@ -1,30 +1,15 @@
 import React from 'react';
+import logo from './images/logo.jpg';
 
 const GetInvolved = ({ cards, setCards }) => {
   return (
     <div>
-      <header id="heading">
-        <nav className="headNav" id="headNavElem">
-          <button id="toggleNav" className="hamburger">
-            <div className="line"></div>
-            <div className="line"></div>
-            <div className="line"></div>
-          </button>
-          <ul id="navItems">
-            <li><a href="./index.html">Home</a></li>
-            <li><a href="./getInvolved.html" className="currentPageIcon">Get Involved</a></li>
-            <li><a href="./funzone.html">Fun Zone</a></li>
-            <li><a href="./about.html">Contact</a></li>
-          </ul>
-        </nav>
-      </header>
-
       <main>
         <section>
-          <div className="title-heading">
-            <img src="./images/logo.jpg" className="rounded-circle logo" alt="clubLogo" />
-            <h1 className="page-title">Tree Climbing Club</h1>
-          </div>
+            <div className="title-heading">
+                <img src={logo} className="rounded-circle logo" alt="clubLogo" />
+                <h1 className="page-title">Tree Climbing Club</h1>
+            </div>
         </section>
 
         <div className="involved-container">
@@ -58,14 +43,6 @@ const GetInvolved = ({ cards, setCards }) => {
 
       <footer className="text-body-secondary py-3">
         <div className="container">
-          <nav>
-            <ul className="nav justify-content-center border-bottom pb-3 mb-3">
-              <li><a href="./index.html">About</a></li>
-              <li><a href="./getInvolved.html">Get Involved</a></li>
-              <li><a href="./funzone.html">Fun Zone</a></li>
-              <li><a href="./about.html">Contact</a></li>
-            </ul>
-          </nav>
           <footer>
             <p>Follow us at:</p>
             <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer"><i className="fab fa-facebook-f"></i></a>
