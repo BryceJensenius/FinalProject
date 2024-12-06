@@ -60,21 +60,6 @@ app.listen(port, () => {
     console.log("App listening at http://%s:%s", host, port);
 });
 
-// app.get("/contact", (req, res) => {
-//     try {
-//         db.query("SELECT * FROM contact", (err, result) => {
-//             if (err) {
-//                 console.error({error:"Error reading all posts:"+err});
-//                 return res.status(500).send({ error: "Error reading all contacts"+err});
-//             }
-//             res.status(200).send(result);
-//         });
-//     } catch (err) {
-//         console.error({ error: "An unexpected error occurred"+err });
-//         res.status(500).send({ error: "An unexpected error occurred"+err });
-//     }
-// });
-
 // app.post("/contact", upload.single("image"), (req, res) => {
 //     const { contact_name, phone_number, message } = req.body;
 //     const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
@@ -181,5 +166,21 @@ app.post("/user/login", (req, res) => {
         // Handle synchronous errors
         console.error("Error in GET /contact/login", err);
         res.status(500).send({ error: "An unexpected error occurred in Login: " + err.message });
+    }
+});
+
+// Get all the Tree Cards for Fun Page
+app.get("/treeCards", (req, res) => {
+    try {
+        db.query("SELECT * FROM trees", (err, result) => {
+            if (err) {
+                console.error({error:"Error reading all tree cards:"+err});
+                return res.status(500).send({ error: "Error reading all tree cards"+err});
+            }
+            res.status(200).send(result);
+        });
+    } catch (err) {
+        console.error({ error: "An unexpected error occurred"+err });
+        res.status(500).send({ error: "An unexpected error occurred"+err });
     }
 });

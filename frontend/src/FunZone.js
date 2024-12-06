@@ -8,12 +8,24 @@ const FunZone = ({ cards, setCards }) => {
     // Function to fetch and load about cards
     const getAboutCards = async () => {
         try {
-            const response = await fetch("data.json");
+            const response = await
+            fetch("http://localhost:8081/treeCards", {
+                method: "GET",
+                headers: { "Content-Type": "application/json", }
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                setError(errorData.error);
+                return;
+            }
+
             const data = await response.json();
             const filteredCards = filterCards(data.aboutCards);
             setAboutCards(filteredCards);
         } catch (err) {
-            console.log("Error:", err);
+            console.log("Failed retrieving about cards. "+err);
+            setError("Failed retrieving about cards. " + err);
         }
     };
 
