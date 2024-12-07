@@ -543,3 +543,8 @@ label{
     justify-content: center; /* Center content if needed */
     align-items: stretch; /* Make items stretch to fill the container */
 }
+
+i {
+    font-size: 24px;
+    color: #0077b5;
+}

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css";
+import 'font-awesome/css/font-awesome.min.css';
 import About from "./About.js";
 import FunZone from "./FunZone.js";
 import GetInvolved from "./GetInvolved.js";

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';  // Import Link from react-router-dom
+import { Link, useLocation } from 'react-router-dom';  // Import Link and useLocation
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const NavBar = ({ username, userRole }) => {
@@ -10,6 +10,9 @@ const NavBar = ({ username, userRole }) => {
   const navItemsRef = useRef(null);
   const headNavigationRef = useRef(null);
   const headerRef = useRef(null);
+
+  // Use useLocation hook to get the current location
+  const location = useLocation();
 
   useEffect(() => {
     // Function to handle nav visibility based on screen size
@@ -64,6 +67,11 @@ const NavBar = ({ username, userRole }) => {
     }
   };
 
+  // Function to check if a link is the page we are currently on, meaning it gets  highlighted
+  const getLinkClass = (path) => {
+    return location.pathname === path ? 'currentPageIcon' : '';
+  };
+
   return (
     <>
       <header id="heading" ref={headerRef}>
@@ -79,10 +87,18 @@ const NavBar = ({ username, userRole }) => {
             <div className="line"></div>
           </button>
           <ul id="navItems" ref={navItemsRef}>
-            <li><Link to="/" className="currentPageIcon">Home</Link></li>
-            <li><Link to="/getInvolved">Get Involved</Link></li>
-            <li><Link to="/funZone">Fun Zone</Link></li>
-            <li><Link to="/aboutPage">Contact</Link></li>
+            <li>
+              <Link to="/" className={getLinkClass('/')}>Home</Link>
+            </li>
+            <li>
+              <Link to="/getInvolved" className={getLinkClass('/getInvolved')}>Get Involved</Link>
+            </li>
+            <li>
+              <Link to="/funZone" className={getLinkClass('/funZone')}>Fun Zone</Link>
+            </li>
+            <li>
+              <Link to="/aboutPage" className={getLinkClass('/aboutPage')}>Contact</Link>
+            </li>
           </ul>
         </nav>
       </header>

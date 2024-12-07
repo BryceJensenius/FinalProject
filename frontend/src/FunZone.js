@@ -123,46 +123,13 @@ const FunZone = ({ cards, setCards }) => {
 
                 <div className="album py-5">
                     <div id="row" className="card-container">
-                        {/* {aboutCards.map((card, index) => (
-                            <div key={index} className="col card shadow-sm d-flex flex-row align-items-center nature-texture-background">
-                                <div className="card-container" style={{ backgroundPosition: randomBackgroundPosition() }}>
-                                    <div className="p-2">
-                                        <img src={card.imageURL} className="rounded-circle picture-Border" alt={card.alt} />
-                                    </div>
-                                    <div className="card-body">
-                                        <h5 className="card-title">{card.heading}</h5>
-                                        <p className="card-text">{card.description}</p>
-                                        <div className="review-form" style={{ display: "none", marginTop: "10px" }}>
-                                            <textarea className="review-text" rows="3" placeholder="Write your review..."></textarea>
-                                            <button className="submit-review">Submit Review</button>
-                                            <button className="cancel-review">Cancel</button>
-                                        </div>
-                                        <div className="leave-review-left" style={{ display: "flex" }}>
-                                            <button
-                                                className="leave-review"
-                                                onClick={(e) => toggleReviewForm(card, e.target.nextElementSibling)}
-                                            >
-                                                More Info
-                                            </button>
-                                            <button
-                                                className="leave-review"
-                                                onClick={(e) => toggleReviewForm(card, e.target.nextElementSibling)}
-                                            >
-                                                Leave Review
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="infoModal"></div>
-                            </div>
-                        ))} */}
                         {aboutCards.map((card, index) => (
                             <div
                                 key={index}
                                 className={`row card shadow-sm align-items-center ${
                                     index % 2 === 0 ? "flex-row-reverse" : "flex-row"
                                 }`}
-                                style={{ marginBottom: "20px" }}
+                                style={{ backgroundPosition: randomBackgroundPosition(), marginBottom: "20px" }}
                             >
                                 <div className="col-md-4">
                                     <img
@@ -175,20 +142,22 @@ const FunZone = ({ cards, setCards }) => {
                                     <div className="card-body">
                                         <h5 className="card-title">{card.heading}</h5>
                                         <p className="card-text">{card.description}</p>
-                                        <div className="review-form" style={{ display: "none", marginTop: "10px" }}>
-                                            <textarea className="review-text" rows="3" placeholder="Write your review..."></textarea>
-                                            <button className="submit-review">Submit Review</button>
-                                            <button className="cancel-review">Cancel</button>
-                                        </div>
-                                        <div className="leave-review-left" style={{ display: "flex" }}>
+                                        <div
+                                            className="review-buttons"
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: index % 2 === 0 ? "flex-start" : "flex-end",
+                                                marginTop: "10px",
+                                            }}
+                                        >
                                             <button
-                                                className="leave-review"
+                                                className="leave-review btn btn-primary me-2"
                                                 onClick={(e) => toggleReviewForm(card, e.target.nextElementSibling)}
                                             >
                                                 More Info
                                             </button>
                                             <button
-                                                className="leave-review"
+                                                className="leave-review btn btn-secondary"
                                                 onClick={(e) => toggleReviewForm(card, e.target.nextElementSibling)}
                                             >
                                                 Leave Review
