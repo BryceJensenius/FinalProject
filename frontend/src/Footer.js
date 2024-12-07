@@ -5,17 +5,18 @@ import { faFacebookF, faInstagram, faTwitter } from '@fortawesome/free-brands-sv
 const Footer = () => {
     return (
         <footer className="text-body-secondary py-3">
-            <div className="container">
+            <div className="container footer-element">
                 <p>Follow us at:</p>
                 <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">
-                    <FontAwesomeIcon icon={faFacebookF} /> Facebook
+                    <FontAwesomeIcon icon={faFacebookF} className="icon-style" /> Facebook
                 </a>
                 <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">
-                    <FontAwesomeIcon icon={faInstagram} /> Instagram
+                    <FontAwesomeIcon icon={faInstagram} className="icon-instagram" /> Instagram
                 </a>
                 <a href="https://x.com" target="_blank" rel="noopener noreferrer">
-                    <FontAwesomeIcon icon={faTwitter} /> Twitter
+                    <FontAwesomeIcon icon={faTwitter} className="icon-twitter" /> Twitter
                 </a>
+
             </div>
         </footer>
     );
