@@ -40,17 +40,6 @@ const GetInvolved = ({ cards, setCards }) => {
           </div>
         </div>
       </main>
-
-      <footer className="text-body-secondary py-3">
-        <div className="container">
-          <footer>
-            <p>Follow us at:</p>
-            <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer"><i className="fab fa-facebook-f"></i></a>
-            <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer"><i className="fab fa-instagram"></i></a>
-            <a href="https://x.com" target="_blank" rel="noopener noreferrer"><i className="fab fa-twitter"></i></a>
-          </footer>
-        </div>
-      </footer>
     </div>
   );
 };

@@ -7,6 +7,7 @@ import GetInvolved from "./GetInvolved.js";
 import Home from "./Home.js";
 import NavBar from "./NavBar.js";
 import Authentication from "./Login.js";
+import Footer from "./Footer.js"
 
 function App() {
   const [cards, setCards] = useState([]);
@@ -23,7 +24,6 @@ function App() {
 
           {/* Main content area */}
           <div className="container mt-4">
-            <h1 className="text-center">Phone Cards App</h1>
             <Routes>
               <Route path="/" element={<Home cards={cards} setCards={setCards} />} />
               <Route path="/getInvolved" element={<GetInvolved cards={cards} setCards={setCards} />} />
@@ -55,6 +55,7 @@ function App() {
           setUserRole={setUserRole}
         />
       )}
+      <Footer/>
     </div>
   );
 }

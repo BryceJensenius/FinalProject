@@ -4,6 +4,7 @@ import logo from './images/logo.jpg';
 const FunZone = ({ cards, setCards }) => {
     const [aboutCards, setAboutCards] = useState([]);
     const [filters, setFilters] = useState({ searchFilter: "" });
+    const [error, setError] = useState("");
 
     // Function to fetch and load about cards
     const getAboutCards = async () => {
@@ -13,7 +14,7 @@ const FunZone = ({ cards, setCards }) => {
                 method: "GET",
                 headers: { "Content-Type": "application/json", }
             });
-
+            console.log(response);
             if (!response.ok) {
                 const errorData = await response.json();
                 setError(errorData.error);
@@ -21,7 +22,7 @@ const FunZone = ({ cards, setCards }) => {
             }
 
             const data = await response.json();
-            const filteredCards = filterCards(data.aboutCards);
+            const filteredCards = filterCards(data);
             setAboutCards(filteredCards);
         } catch (err) {
             console.log("Failed retrieving about cards. "+err);
@@ -122,7 +123,7 @@ const FunZone = ({ cards, setCards }) => {
 
                 <div className="album py-5">
                     <div id="row" className="card-container">
-                        {aboutCards.map((card, index) => (
+                        {/* {aboutCards.map((card, index) => (
                             <div key={index} className="col card shadow-sm d-flex flex-row align-items-center nature-texture-background">
                                 <div className="card-container" style={{ backgroundPosition: randomBackgroundPosition() }}>
                                     <div className="p-2">
@@ -154,19 +155,53 @@ const FunZone = ({ cards, setCards }) => {
                                 </div>
                                 <div id="infoModal"></div>
                             </div>
+                        ))} */}
+                        {aboutCards.map((card, index) => (
+                            <div
+                                key={index}
+                                className={`row card shadow-sm align-items-center ${
+                                    index % 2 === 0 ? "flex-row-reverse" : "flex-row"
+                                }`}
+                                style={{ marginBottom: "20px" }}
+                            >
+                                <div className="col-md-4">
+                                    <img
+                                        src={card.imageURL}
+                                        className="rounded-circle picture-Border img-fluid"
+                                        alt={card.alt}
+                                    />
+                                </div>
+                                <div className="col-md-8">
+                                    <div className="card-body">
+                                        <h5 className="card-title">{card.heading}</h5>
+                                        <p className="card-text">{card.description}</p>
+                                        <div className="review-form" style={{ display: "none", marginTop: "10px" }}>
+                                            <textarea className="review-text" rows="3" placeholder="Write your review..."></textarea>
+                                            <button className="submit-review">Submit Review</button>
+                                            <button className="cancel-review">Cancel</button>
+                                        </div>
+                                        <div className="leave-review-left" style={{ display: "flex" }}>
+                                            <button
+                                                className="leave-review"
+                                                onClick={(e) => toggleReviewForm(card, e.target.nextElementSibling)}
+                                            >
+                                                More Info
+                                            </button>
+                                            <button
+                                                className="leave-review"
+                                                onClick={(e) => toggleReviewForm(card, e.target.nextElementSibling)}
+                                            >
+                                                Leave Review
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         ))}
+
                     </div>
                 </div>
             </main>
-
-            <footer className="text-body-secondary py-3">
-                <div className="container">
-                    <p>Follow us at:</p>
-                    <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer"><i className="fab fa-facebook-f"></i></a>
-                    <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer"><i className="fab fa-instagram"></i></a>
-                    <a href="https://x.com" target="_blank" rel="noopener noreferrer"><i className="fab fa-twitter"></i></a>
-                </div>
-            </footer>
         </div>
     );
 };

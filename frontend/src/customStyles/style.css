@@ -79,7 +79,7 @@ img {
     margin: 0;
     padding: 0;
 
-    background-image: url("../images/treeByBrooksidePark.JPEG");
+    background-image: url("../../public/images/treeByBrooksidePark.JPEG");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -218,7 +218,7 @@ header a:hover {
 
 .card {
     width: 70vw;
-    background-image: url('../images/natureCardTexture.jpg');
+    background-image: url('../../public/images/natureCardTexture.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -422,7 +422,7 @@ label{
 }
 .involved-container{
     width: 70vw;
-    background-image: url('../images/natureCardTexture.jpg');
+    background-image: url('../../public/images/natureCardTexture.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -443,7 +443,7 @@ label{
 }
 .question-container{
     width: 60vw;
-    background-image: url('../images/natureCardTexture.jpg');
+    background-image: url('../../public/images/natureCardTexture.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -478,7 +478,7 @@ label{
 }
 
 .backgroundWithImage {
-    background-image: url("../images/treeByLibrary.jpg");
+    background-image: url("../../public/images/treeByLibrary.jpg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -528,4 +528,18 @@ label{
     justify-content: center;
     align-items: center;
     margin: 20px 0;
+}
+
+
+
+/* This ensures the tree cards display in rows not columns */
+.card-container {
+    flex-direction: column; /* Stack items vertically */
+    gap: 1rem; /* Add spacing between items */
+}
+
+.row {
+    width: 100%; /* Ensure full width */
+    justify-content: center; /* Center content if needed */
+    align-items: stretch; /* Make items stretch to fill the container */
 }
