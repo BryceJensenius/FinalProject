@@ -78,13 +78,40 @@ const FunZone = ({ cards, setCards }) => {
 
     // Toggle the More Info section to load and show reviews
     const toggleMoreInfo = async (id) => {
-        const reviews = await getCardReviews(id);
-        setSelectedCardReviews((prev) => ({
-            ...prev,
-            [id]: reviews,
-        }));
+        if (selectedCardReviews[id]) {
+            // If reviews are already loaded, remove them to toggle off
+            setSelectedCardReviews((prev) => {
+                const updatedReviews = { ...prev };
+                delete updatedReviews[id];
+                return updatedReviews;
+            });
+        } else {
+            // Otherwise, fetch and display reviews
+            const reviews = await getCardReviews(id);
+            setSelectedCardReviews((prev) => ({
+                ...prev,
+                [id]: reviews,
+            }));
+        }
     };
     
+    const toggleMoreInfoState = async (id, state) => {
+        if (selectedCardReviews[id] && !state) {
+            // Review is loaded and state is false, unload
+            setSelectedCardReviews((prev) => {
+                const updatedReviews = { ...prev };
+                delete updatedReviews[id];
+                return updatedReviews;
+            });
+        } else if(state){ // State is true, load
+            // Otherwise, fetch and display reviews
+            const reviews = await getCardReviews(id);
+            setSelectedCardReviews((prev) => ({
+                ...prev,
+                [id]: reviews,
+            }));
+        }
+    };
 
     // Filter cards based on the search filter
     const filterCards = (cards) => {
@@ -171,18 +198,27 @@ const FunZone = ({ cards, setCards }) => {
                                         >
                                             <button
                                                 className="leave-review btn btn-primary me-2"
-                                                onClick={() => toggleMoreInfo(card.id)}
+                                                onClick={
+                                                    () => {
+                                                        toggleMoreInfo(card.id)
+                                                        setReviewFormData((prev) =>
+                                                            prev.tree_id = { description: "", rating: "", tree_id: null } // Toggle off
+                                                        );
+                                                    }
+                                                }
                                             >
                                                 More Info
                                             </button>
                                             <button
                                                 className="leave-review btn btn-secondary"
-                                                onClick={() =>
-                                                    setReviewFormData((prev) => ({
-                                                        ...prev,
-                                                        tree_id: card.id,
-                                                    }))
-                                                }
+                                                onClick={() => {
+                                                    toggleMoreInfoState(card.id, false); // Turn toggle off
+                                                    setReviewFormData((prev) =>
+                                                        prev.tree_id === card.id
+                                                            ? { description: "", rating: "", tree_id: null } // Toggle off
+                                                            : { description: "", rating: "", tree_id: card.id } // Toggle on
+                                                    );
+                                                }}                                                                                                                                         
                                             >
                                                 Leave Review
                                             </button>
@@ -190,47 +226,66 @@ const FunZone = ({ cards, setCards }) => {
                                         {/* Reviews Section */}
                                         {selectedCardReviews[card.id] && (
                                             <div className="reviews-section">
-                                                <h6>Reviews:</h6>
+                                                <h6 className="reviews-heading">Reviews:</h6>
                                                 {selectedCardReviews[card.id].map((review, i) => (
                                                     <div key={i} className="review-item">
-                                                        <p>{review.description}</p>
-                                                        <p>Rating: {review.rating}</p>
+                                                        <div className="review-content">
+                                                            <p className="review-description">{review.description}</p>
+                                                            <div className="review-rating">
+                                                                <strong>Rating:</strong> {review.rating} / 5
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 ))}
                                             </div>
                                         )}
+
+
                                         {/* Leave Review Form */}
                                         {reviewFormData.tree_id === card.id && (
                                             <div className="leave-review-form">
-                                                <textarea
-                                                    value={reviewFormData.description}
-                                                    onChange={(e) =>
-                                                        setReviewFormData((prev) => ({
-                                                            ...prev,
-                                                            description: e.target.value,
-                                                        }))
-                                                    }
-                                                    placeholder="Write your review..."
-                                                />
-                                                <input
-                                                    type="number"
-                                                    value={reviewFormData.rating}
-                                                    onChange={(e) =>
-                                                        setReviewFormData((prev) => ({
-                                                            ...prev,
-                                                            rating: e.target.value,
-                                                        }))
-                                                    }
-                                                    placeholder="Rating (1-5)"
-                                                    min="1"
-                                                    max="5"
-                                                />
-                                                <button
-                                                    onClick={submitReview}
-                                                    className="btn btn-success"
-                                                >
-                                                    Submit
-                                                </button>
+                                                <h5 className="form-title">Leave a Review</h5>
+                                            
+                                                <div className="form-group">
+                                                    <textarea
+                                                        className="form-control"
+                                                        value={reviewFormData.description}
+                                                        onChange={(e) =>
+                                                            setReviewFormData((prev) => ({
+                                                                ...prev,
+                                                                description: e.target.value,
+                                                            }))
+                                                        }
+                                                        placeholder="Write your review..."
+                                                        rows="4"
+                                                    />
+                                                </div>
+                                            
+                                                <div className="form-group">
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        value={reviewFormData.rating}
+                                                        onChange={(e) =>
+                                                            setReviewFormData((prev) => ({
+                                                                ...prev,
+                                                                rating: e.target.value,
+                                                            }))
+                                                        }
+                                                        placeholder="Rating (1-10)"
+                                                        min="1"
+                                                        max="10"
+                                                    />
+                                                </div>
+                                            
+                                                <div className="form-group">
+                                                    <button
+                                                        onClick={submitReview}
+                                                        className="btn btn-success btn-submit"
+                                                    >
+                                                        Submit Review
+                                                    </button>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
