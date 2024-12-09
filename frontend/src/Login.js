@@ -47,7 +47,7 @@ const Authentication = ({ username, setUsername, password, setPassword, setUserR
                 </div>
 
                 {error && <p className="text-danger">{error}</p>}
-                <button type="submit" className="btn btn-primary">Login</button>
+                <button type="submit" className="btn btn-primary mb-3">Login</button>
             </form>
         </div>
 
