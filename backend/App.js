@@ -184,3 +184,46 @@ app.get("/treeCards", (req, res) => {
         res.status(500).send({ error: "An unexpected error occurred"+err });
     }
 });
+
+// Get all reviews for a specific tree_id
+app.get("/reviews/:tree_id", (req, res) => {
+    const { tree_id } = req.params; // Extract the 'tree_id' parameter from the URL
+
+    try {
+        // Query the reviews table where tree_id matches
+        db.query("SELECT * FROM reviews WHERE tree_id = ?", [tree_id], (err, result) => {
+            if (err) {
+                console.error({ error: "Error fetching reviews for tree_id: " + tree_id, details: err });
+                return res.status(500).send({ error: "Error fetching reviews for tree_id: " + tree_id });
+            }
+            if (result.length === 0) {
+                return res.status(404).send({ message: "No reviews found for tree_id: " + tree_id });
+            }
+            res.status(200).send(result);
+        });
+    } catch (err) {
+        console.error({ error: "An unexpected error occurred", details: err });
+        res.status(500).send({ error: "An unexpected error occurred" });
+    }
+});
+
+// Endpoint to submit a new review
+app.post("/reviews", (req, res) => {
+    const { tree_id, description, rating } = req.body;
+
+    // Validate input
+    if (!tree_id || !description || !rating) {
+        return res.status(400).send({ error: "Missing required fields: tree_id, description, or rating." });
+    }
+
+    // Insert the new review into the database
+    const query = "INSERT INTO reviews (tree_id, description, rating) VALUES (?, ?, ?)";
+    db.query(query, [tree_id, description, rating], (err, result) => {
+        if (err) {
+            console.error("Error inserting review:", err);
+            return res.status(500).send({ error: "Failed to submit review." });
+        }
+        // Return success response
+        res.status(201).send({ message: "Review submitted successfully.", reviewId: result.insertId });
+    });
+});

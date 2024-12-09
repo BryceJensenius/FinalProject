@@ -1,45 +1,90 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import logo from './images/logo.jpg';
 
 const FunZone = ({ cards, setCards }) => {
     const [aboutCards, setAboutCards] = useState([]);
     const [filters, setFilters] = useState({ searchFilter: "" });
     const [error, setError] = useState("");
+    const [selectedCardReviews, setSelectedCardReviews] = useState({});
+    const [reviewFormData, setReviewFormData] = useState({ description: "", rating: "", id: null });
 
     // Function to fetch and load about cards
     const getAboutCards = async () => {
         try {
-            const response = await
-            fetch("http://localhost:8081/treeCards", {
+            const response = await fetch("http://localhost:8081/treeCards", {
                 method: "GET",
-                headers: { "Content-Type": "application/json", }
+                headers: { "Content-Type": "application/json" },
             });
-            console.log(response);
             if (!response.ok) {
                 const errorData = await response.json();
                 setError(errorData.error);
                 return;
             }
-
             const data = await response.json();
             const filteredCards = filterCards(data);
             setAboutCards(filteredCards);
         } catch (err) {
-            console.log("Failed retrieving about cards. "+err);
-            setError("Failed retrieving about cards. " + err);
+            console.log("Failed retrieving about cards: " + err);
+            setError("Failed retrieving about cards: " + err);
         }
     };
 
-    // Function to fetch and load card reviews
-    const getCardReviews = async (heading) => {
+    // Function to fetch and load card reviews for a specific tree_id
+    const getCardReviews = async (id) => {
         try {
-            const response = await fetch(`./Data/${heading}.json`);
+            const response = await fetch(`http://localhost:8081/reviews/${id}`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+            });
+            if (!response.ok) {
+                console.log(`Error: Failed to fetch reviews for card ID ${id}. Status: ${response.status}`);
+                return [];
+            }
             const data = await response.json();
-            return data.reviews;
+            return data;
         } catch (err) {
-            console.log("Error:", err);
+            console.log("Error fetching reviews: ", err);
+            return [];
         }
+    };    
+
+    // Function to submit a new review
+    const submitReview = async () => {
+        try {
+            console.log(reviewFormData);
+            const response = await fetch("http://localhost:8081/reviews", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(reviewFormData),
+            });
+            if (!response.ok) {
+                console.log("Error submitting review");
+                return;
+            }
+            const data = await response.json();
+            console.log("Review submitted successfully: ", data);
+            alert("Review submitted successfully!");
+    
+            // Refresh reviews for the specific card
+            const reviews = await getCardReviews(reviewFormData.id);
+            setSelectedCardReviews((prev) => ({ ...prev, [reviewFormData.tree_id]: reviews }));
+    
+            // Reset form
+            setReviewFormData({ description: "", rating: "", tree_id: null });
+        } catch (err) {
+            console.log("Error submitting review: ", err);
+        }
+    };    
+
+    // Toggle the More Info section to load and show reviews
+    const toggleMoreInfo = async (id) => {
+        const reviews = await getCardReviews(id);
+        setSelectedCardReviews((prev) => ({
+            ...prev,
+            [id]: reviews,
+        }));
     };
+    
 
     // Filter cards based on the search filter
     const filterCards = (cards) => {
@@ -59,44 +104,6 @@ const FunZone = ({ cards, setCards }) => {
         getAboutCards();
     }, [filters]);
 
-    // Function to toggle the review form
-    const toggleReviewForm = (card, reviewTextAreaRef) => {
-        reviewTextAreaRef.current.style.display =
-            reviewTextAreaRef.current.style.display === "none" ? "block" : "none";
-        if (reviewTextAreaRef.current.style.display === "block") {
-            getCardReviews(card.heading).then(reviews => {
-                loadReviewsForElement(reviewTextAreaRef.current, reviews);
-            });
-        }
-    };
-
-    // Function to load reviews for a specific card
-    const loadReviewsForElement = (element, reviews) => {
-        element.innerHTML = ''; // Clear existing reviews
-        reviews.forEach(review => {
-            const reviewDiv = document.createElement("div");
-            reviewDiv.classList.add("review-container");
-            reviewDiv.innerHTML = `
-                <div class="card-body">
-                    <h5 class="card-title">Student Review</h5>
-                    <p class="card-text">${review.description}</p>
-                    <p class="card-text">Rating: ${review.rating}</p>
-                </div>
-            `;
-            element.appendChild(reviewDiv);
-        });
-    };
-
-    // Handle the search filter input change
-    const handleSearchInputChange = (e) => {
-        setFilters(prevFilters => ({ ...prevFilters, searchFilter: e.target.value }));
-    };
-
-    // Handle the search button click
-    const handleSearchButtonClick = () => {
-        getAboutCards(); // Fetch cards based on updated filter
-    };
-
     return (
         <div>
             <main>
@@ -114,9 +121,18 @@ const FunZone = ({ cards, setCards }) => {
                         className="search-input inputEntry form-control"
                         placeholder="Filter By..."
                         value={filters.searchFilter}
-                        onChange={handleSearchInputChange}
+                        onChange={(e) =>
+                            setFilters((prevFilters) => ({
+                                ...prevFilters,
+                                searchFilter: e.target.value,
+                            }))
+                        }
                     />
-                    <button id="searchButton" className="search-button" onClick={handleSearchButtonClick}>
+                    <button
+                        id="searchButton"
+                        className="search-button"
+                        onClick={getAboutCards}
+                    >
                         Search
                     </button>
                 </div>
@@ -125,11 +141,14 @@ const FunZone = ({ cards, setCards }) => {
                     <div id="row" className="card-container">
                         {aboutCards.map((card, index) => (
                             <div
-                                key={index}
+                                key={index} 
                                 className={`row card shadow-sm align-items-center ${
                                     index % 2 === 0 ? "flex-row-reverse" : "flex-row"
                                 }`}
-                                style={{ backgroundPosition: randomBackgroundPosition(), marginBottom: "20px" }}
+                                style={{
+                                    backgroundPosition: randomBackgroundPosition(),
+                                    marginBottom: "20px",
+                                }}
                             >
                                 <div className="col-md-4">
                                     <img
@@ -152,22 +171,72 @@ const FunZone = ({ cards, setCards }) => {
                                         >
                                             <button
                                                 className="leave-review btn btn-primary me-2"
-                                                onClick={(e) => toggleReviewForm(card, e.target.nextElementSibling)}
+                                                onClick={() => toggleMoreInfo(card.id)}
                                             >
                                                 More Info
                                             </button>
                                             <button
                                                 className="leave-review btn btn-secondary"
-                                                onClick={(e) => toggleReviewForm(card, e.target.nextElementSibling)}
+                                                onClick={() =>
+                                                    setReviewFormData((prev) => ({
+                                                        ...prev,
+                                                        tree_id: card.id,
+                                                    }))
+                                                }
                                             >
                                                 Leave Review
                                             </button>
                                         </div>
+                                        {/* Reviews Section */}
+                                        {selectedCardReviews[card.id] && (
+                                            <div className="reviews-section">
+                                                <h6>Reviews:</h6>
+                                                {selectedCardReviews[card.id].map((review, i) => (
+                                                    <div key={i} className="review-item">
+                                                        <p>{review.description}</p>
+                                                        <p>Rating: {review.rating}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                        {/* Leave Review Form */}
+                                        {reviewFormData.tree_id === card.id && (
+                                            <div className="leave-review-form">
+                                                <textarea
+                                                    value={reviewFormData.description}
+                                                    onChange={(e) =>
+                                                        setReviewFormData((prev) => ({
+                                                            ...prev,
+                                                            description: e.target.value,
+                                                        }))
+                                                    }
+                                                    placeholder="Write your review..."
+                                                />
+                                                <input
+                                                    type="number"
+                                                    value={reviewFormData.rating}
+                                                    onChange={(e) =>
+                                                        setReviewFormData((prev) => ({
+                                                            ...prev,
+                                                            rating: e.target.value,
+                                                        }))
+                                                    }
+                                                    placeholder="Rating (1-5)"
+                                                    min="1"
+                                                    max="5"
+                                                />
+                                                <button
+                                                    onClick={submitReview}
+                                                    className="btn btn-success"
+                                                >
+                                                    Submit
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
                         ))}
-
                     </div>
                 </div>
             </main>
