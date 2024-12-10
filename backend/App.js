@@ -227,3 +227,32 @@ app.post("/reviews", (req, res) => {
         res.status(201).send({ message: "Review submitted successfully.", reviewId: result.insertId });
     });
 });
+
+app.post("/user/register", (req, res) => {
+    // Destructure the name, password, and role from the request body
+    const { name, password, role } = req.body;
+  
+    // Validate input
+    if (!name || !password || !role) {
+      return res.status(400).send({ error: "All fields are required." });
+    }
+  
+    // SQL query to insert new user into the database
+    const query = "INSERT INTO user (name, password, role) VALUES (?, ?, ?)";
+  
+    try {
+      db.query(query, [name, password, role], (err, results) => {
+        if (err) {
+          console.error("Database error during registration:", err);
+          return res.status(500).send({ error: "An error occurred. Please try again." });
+        }
+  
+        // Successfully inserted user
+        res.status(201).send({ message: "User registered successfully." });
+      });
+    } catch (err) {
+      console.error("Error in POST /user/register:", err);
+      res.status(500).send({ error: "Unexpected error occurred. Please try again." });
+    }
+  });
+  

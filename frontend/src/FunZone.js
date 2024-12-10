@@ -23,7 +23,7 @@ const FunZone = ({ cards, setCards }) => {
             const data = await response.json();
             const filteredCards = filterCards(data);
             
-            // Add a random background position to each card
+            // Add a random background position to each card only after search
             const cardsWithBackground = filteredCards.map(card => ({
                 ...card,
                 backgroundPosition: randomBackgroundPosition(),
@@ -34,6 +34,11 @@ const FunZone = ({ cards, setCards }) => {
             console.log("Failed retrieving about cards: " + err);
             setError("Failed retrieving about cards: " + err);
         }
+    };
+
+    // Function to handle the search click event
+    const handleSearch = () => {
+        getAboutCards(); // Fetch the cards and apply the background position only when search is triggered
     };
 
     // Function to fetch and load card reviews for a specific tree_id
@@ -148,7 +153,7 @@ const FunZone = ({ cards, setCards }) => {
             );
         });
     };
-
+    
     useEffect(() => {
         // Fetch the cards on mount
         getAboutCards();
@@ -181,7 +186,7 @@ const FunZone = ({ cards, setCards }) => {
                     <button
                         id="searchButton"
                         className="search-button"
-                        onClick={getAboutCards}
+                        onClick={handleSearch} // Trigger search manually
                     >
                         Search
                     </button>

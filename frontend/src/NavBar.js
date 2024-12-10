@@ -88,7 +88,7 @@ const NavBar = ({ username, userRole }) => {
           </button>
           <ul id="navItems" ref={navItemsRef}>
             <li>
-              <Link to="/" className={getLinkClass('/')}>Home</Link>
+              <Link to="/home" className={getLinkClass('/')}>Home</Link>
             </li>
             <li>
               <Link to="/getInvolved" className={getLinkClass('/getInvolved')}>Get Involved</Link>

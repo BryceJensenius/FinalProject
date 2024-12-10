@@ -405,6 +405,7 @@ header a:hover {
 .search-button:hover {
     background-color: #478747;
 }
+
 label{
     font-size: min(18px, 3vw);
     font-family: Baskerville;
@@ -413,10 +414,11 @@ label{
     justify-content: center;
     align-items: center;
 }
+
 .btn-primary{
     background-color: #478747;
-    margin-left: 10px;
 }
+
 .form-group{
     width: 60vw;
     padding: 10px 15px;

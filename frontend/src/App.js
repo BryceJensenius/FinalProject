@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import 'font-awesome/css/font-awesome.min.css';
 import About from "./About.js";
@@ -8,7 +8,8 @@ import GetInvolved from "./GetInvolved.js";
 import Home from "./Home.js";
 import NavBar from "./NavBar.js";
 import Authentication from "./Login.js";
-import Footer from "./Footer.js"
+import Register from "./Register.js"; // Register component import
+import Footer from "./Footer.js";
 
 function App() {
   const [cards, setCards] = useState([]);
@@ -18,45 +19,35 @@ function App() {
 
   return (
     <div className="App">
-      {userRole ? (
-        <Router>
-          {/* Navbar placed at the top of the screen */}
-          <NavBar userRole={userRole} />
+      <Router>
+        {/* Navbar and Footer */}
+        {userRole && <NavBar userRole={userRole} />}
+        {/* Main Routes - These should be visible to everyone */}
+        <Routes>
+          {/* Auth routes */}
+          <Route path="/" element={
+            <Authentication
+              username={username}
+              setUsername={setUsername}
+              password={password}
+              setPassword={setPassword}
+              setUserRole={setUserRole}
+            />
+          } />
+          <Route path="/register" element={<Register />} />
 
-          {/* Main content area */}
-          <div className="container mt-4">
-            <Routes>
-              <Route path="/" element={<Home cards={cards} setCards={setCards} />} />
+          {/* Routes that require the user to be logged in */}
+          {userRole && (
+            <>
+              <Route path="/home" element={<Home cards={cards} setCards={setCards} />} />
               <Route path="/getInvolved" element={<GetInvolved cards={cards} setCards={setCards} />} />
               <Route path="/funZone" element={<FunZone cards={cards} setCards={setCards} />} />
               <Route path="/aboutPage" element={<About cards={cards} setCards={setCards} />} />
-
-               {/* This will be Screens for creating events, viewing requests to join, and looking at questions */}
-                {/* {userRole === "admin" && ( 
-                  <>
-                    <Route path="/add-contact" element={<AddContact
-                      cards={cards}
-                      setCards={setCards}
-                    />} />
-                    <Route path="/deletecontact" element={<DeleteContact
-                      cards={cards}
-                      setCards={setCards}
-                    />} />
-                  </>
-                )} */}
-            </Routes>
-          </div>
-        </Router>
-      ) : (
-        <Authentication
-          username={username}
-          setUsername={setUsername}
-          password={password}
-          setPassword={setPassword}
-          setUserRole={setUserRole}
-        />
-      )}
-      <Footer/>
+            </>
+          )}
+        </Routes>
+        <Footer />
+      </Router>
     </div>
   );
 }

@@ -8,6 +8,7 @@ const About = ({ cards, setCards }) => {
     message: ''
   });
 
+  // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -16,10 +17,11 @@ const About = ({ cards, setCards }) => {
     }));
   };
 
+  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle form submission here (e.g., send the data to an API)
-    console.log(formData); // Just logs for now
+    console.log(formData); // Logs form data for now
     // Reset form after submission (optional)
     setFormData({ email: '', name: '', message: '' });
   };
