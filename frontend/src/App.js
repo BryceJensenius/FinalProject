@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import 'font-awesome/css/font-awesome.min.css';
 import About from "./About.js";
 import FunZone from "./FunZone.js";
@@ -44,7 +44,9 @@ function App() {
               <Route path="/funZone" element={<FunZone cards={cards} setCards={setCards} />} />
               <Route path="/aboutPage" element={<About cards={cards} setCards={setCards} />} />
             </>
-          )}
+          )} : {
+            <Route path="*" element={<Navigate to="/" />} />
+          }
         </Routes>
         <Footer />
       </Router>
