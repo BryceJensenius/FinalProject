@@ -630,7 +630,7 @@ i {
 
 .review-item {
     padding: 15px;
-    background-color: #fff; /* White background for reviews */
+    background-color: #def9df; /* White background for reviews */
     border-radius: 8px;
     margin-bottom: 15px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -650,10 +650,30 @@ i {
     margin-bottom: 10px;
     font-style: italic;
     color: #666; /* Light gray for description text */
+    font-size: 14px;
+    margin: 0;
+
 }
 
 .review-rating {
     font-size: 1rem;
     font-weight: bold;
     color: #388e3c; /* Medium green for the rating */
+    margin-top: 5px;
+}
+.reviews-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.reviews-box {
+    max-height: 400px; /* Adjust based on how tall you want the scroll box */
+    overflow-y: auto; /* Makes it scrollable vertically */
+    padding-right: 10px; /* Adds a little padding on the right side */
+    border-radius: 5px; /* Optional rounded corners */
+    margin-top: 10px;
+}
+
+.review-rating {
+    margin-top: 5px;
 }

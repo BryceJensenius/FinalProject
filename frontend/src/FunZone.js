@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import logo from './images/logo.jpg';
 
 const FunZone = ({ cards, setCards }) => {
@@ -22,7 +22,14 @@ const FunZone = ({ cards, setCards }) => {
             }
             const data = await response.json();
             const filteredCards = filterCards(data);
-            setAboutCards(filteredCards);
+            
+            // Add a random background position to each card
+            const cardsWithBackground = filteredCards.map(card => ({
+                ...card,
+                backgroundPosition: randomBackgroundPosition(),
+            }));
+
+            setAboutCards(cardsWithBackground);
         } catch (err) {
             console.log("Failed retrieving about cards: " + err);
             setError("Failed retrieving about cards: " + err);
@@ -46,35 +53,51 @@ const FunZone = ({ cards, setCards }) => {
             console.log("Error fetching reviews: ", err);
             return [];
         }
-    };    
+    };
 
-    // Function to submit a new review
-    const submitReview = async () => {
+    // After submitting the review, fetch and update the reviews for the specific card
+    const submitReview = async (tree_id) => {
         try {
-            console.log(reviewFormData);
+            if (!reviewFormData.description || !reviewFormData.rating || !tree_id) {
+                console.log("Error: Missing review details or tree_id.");
+                return;
+            }
+    
+            // Add tree_id to the reviewFormData
+            const reviewData = { ...reviewFormData, tree_id };
+    
+            console.log(reviewData);
             const response = await fetch("http://localhost:8081/reviews", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(reviewFormData),
+                body: JSON.stringify(reviewData),
             });
+    
             if (!response.ok) {
                 console.log("Error submitting review");
                 return;
             }
+    
             const data = await response.json();
             console.log("Review submitted successfully: ", data);
             alert("Review submitted successfully!");
-    
-            // Refresh reviews for the specific card
-            const reviews = await getCardReviews(reviewFormData.id);
-            setSelectedCardReviews((prev) => ({ ...prev, [reviewFormData.tree_id]: reviews }));
+            
+            // Now toggle the "More Info" section on to immediately display the new review
+            toggleMoreInfo(tree_id);
+            setReviewFormData((prev) => ({
+                ...prev,
+                tree_id: null,
+                description: "",
+                rating: "",
+            }));
     
             // Reset form
             setReviewFormData({ description: "", rating: "", tree_id: null });
         } catch (err) {
             console.log("Error submitting review: ", err);
         }
-    };    
+    };
+      
 
     // Toggle the More Info section to load and show reviews
     const toggleMoreInfo = async (id) => {
@@ -94,7 +117,7 @@ const FunZone = ({ cards, setCards }) => {
             }));
         }
     };
-    
+
     const toggleMoreInfoState = async (id, state) => {
         if (selectedCardReviews[id] && !state) {
             // Review is loaded and state is false, unload
@@ -103,7 +126,7 @@ const FunZone = ({ cards, setCards }) => {
                 delete updatedReviews[id];
                 return updatedReviews;
             });
-        } else if(state){ // State is true, load
+        } else if (state) {
             // Otherwise, fetch and display reviews
             const reviews = await getCardReviews(id);
             setSelectedCardReviews((prev) => ({
@@ -173,7 +196,7 @@ const FunZone = ({ cards, setCards }) => {
                                     index % 2 === 0 ? "flex-row-reverse" : "flex-row"
                                 }`}
                                 style={{
-                                    backgroundPosition: randomBackgroundPosition(),
+                                    backgroundPosition: card.backgroundPosition,
                                     marginBottom: "20px",
                                 }}
                             >
@@ -198,27 +221,28 @@ const FunZone = ({ cards, setCards }) => {
                                         >
                                             <button
                                                 className="leave-review btn btn-primary me-2"
-                                                onClick={
-                                                    () => {
-                                                        toggleMoreInfo(card.id)
-                                                        setReviewFormData((prev) =>
-                                                            prev.tree_id = { description: "", rating: "", tree_id: null } // Toggle off
-                                                        );
-                                                    }
-                                                }
+                                                onClick={() => {
+                                                    toggleMoreInfo(card.id);
+                                                    setReviewFormData((prev) => ({
+                                                        ...prev,
+                                                        tree_id: null,
+                                                        description: "",
+                                                        rating: "",
+                                                    }));
+                                                }}
                                             >
                                                 More Info
                                             </button>
                                             <button
                                                 className="leave-review btn btn-secondary"
                                                 onClick={() => {
-                                                    toggleMoreInfoState(card.id, false); // Turn toggle off
+                                                    toggleMoreInfoState(card.id, false);
                                                     setReviewFormData((prev) =>
                                                         prev.tree_id === card.id
-                                                            ? { description: "", rating: "", tree_id: null } // Toggle off
-                                                            : { description: "", rating: "", tree_id: card.id } // Toggle on
+                                                            ? { description: "", rating: "", tree_id: null }
+                                                            : { description: "", rating: "", tree_id: card.id }
                                                     );
-                                                }}                                                                                                                                         
+                                                }}
                                             >
                                                 Leave Review
                                             </button>
@@ -227,25 +251,28 @@ const FunZone = ({ cards, setCards }) => {
                                         {selectedCardReviews[card.id] && (
                                             <div className="reviews-section">
                                                 <h6 className="reviews-heading">Reviews:</h6>
-                                                {selectedCardReviews[card.id].map((review, i) => (
-                                                    <div key={i} className="review-item">
-                                                        <div className="review-content">
-                                                            <p className="review-description">{review.description}</p>
-                                                            <div className="review-rating">
-                                                                <strong>Rating:</strong> {review.rating} / 5
+                                                <div className="reviews-container">
+                                                    <div className="reviews-box">
+                                                        {selectedCardReviews[card.id].map((review, i) => (
+                                                            <div key={i} className="review-item">
+                                                                <div className="review-content">
+                                                                    <p className="review-description">{review.description}</p>
+                                                                    <div className="review-rating">
+                                                                        <strong>Rating:</strong> {review.rating} / 10
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                        </div>
+                                                        ))}
                                                     </div>
-                                                ))}
+                                                </div>
                                             </div>
                                         )}
-
 
                                         {/* Leave Review Form */}
                                         {reviewFormData.tree_id === card.id && (
                                             <div className="leave-review-form">
                                                 <h5 className="form-title">Leave a Review</h5>
-                                            
+                                                
                                                 <div className="form-group">
                                                     <textarea
                                                         className="form-control"
@@ -279,12 +306,13 @@ const FunZone = ({ cards, setCards }) => {
                                                 </div>
                                             
                                                 <div className="form-group">
-                                                    <button
-                                                        onClick={submitReview}
-                                                        className="btn btn-success btn-submit"
-                                                    >
-                                                        Submit Review
-                                                    </button>
+                                                <button
+                                                    onClick={() => submitReview(card.id)} // Pass card.id here
+                                                    className="btn btn-success btn-submit"
+                                                >
+                                                    Submit Review
+                                                </button>
+
                                                 </div>
                                             </div>
                                         )}
