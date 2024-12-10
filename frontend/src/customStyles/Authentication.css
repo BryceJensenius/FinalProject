@@ -1,0 +1,9 @@
+
+.card {
+    border-radius: 12px; /* Smooth rounded corners */
+    border: none; /* Removes default border */
+}
+
+.green-text{
+    color: #2c6b2f; /* Dark green for the heading */
+}
