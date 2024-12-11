@@ -69,7 +69,7 @@ const FunZone = ({ cards, setCards }) => {
             }
     
             // Add tree_id to the reviewFormData
-            const reviewData = { ...reviewFormData, tree_id };
+            const reviewData = { ...reviewFormData, tree_id};
     
             console.log(reviewData);
             const response = await fetch("http://localhost:8081/reviews", {

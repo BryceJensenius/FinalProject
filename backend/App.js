@@ -1,6 +1,7 @@
 // Bryce Jensenius
+// Maggie Sullivan
 // brycejen@iastate.edu
-// 11/15/24
+// 12/11/24
 
 var express = require("express");
 var cors = require("cors");
@@ -59,87 +60,6 @@ app.use("/uploads", express.static("uploads")); // Serve images statically
 app.listen(port, () => {
     console.log("App listening at http://%s:%s", host, port);
 });
-
-// app.post("/contact", upload.single("image"), (req, res) => {
-//     const { contact_name, phone_number, message } = req.body;
-//     const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
-
-//     const query = "INSERT INTO contact (contact_name, phone_number, message, image_url) VALUES (?, ?, ?, ?)";
-//     const checkQuery = "SELECT * FROM contact WHERE contact_name = ?";
-//     try {
-//         db.query(checkQuery, [contact_name], (checkErr, checkResult) => {
-//             if (checkErr) {
-//                 console.error("Database error during validation:", checkErr);
-//                 return res.status(500).send({ error: "Error checking contact name: " + checkErr.message });
-//             }
-//             if (checkResult.length > 0) {
-//                 // If contact_name exists, send a conflict response
-//                 return res.status(409).send({ error: "Contact name already exists." });
-//             }
-//         });
-
-//         db.query(query, [contact_name, phone_number, message, imageUrl], (err, result) => {
-//             if (err) {
-//                 console.log(err);
-//                 res.status(500).send({error:"Error adding contact"+err});
-//             } else {
-//                 res.status(201).send("Contact added successfully");
-//             }
-//         });
-
-//     } catch (err) {
-//         // Handle synchronous errors
-//         console.error("Error in POST /contact:", err);
-//         res.status(500).send({ error: "An unexpected error occurred: " + err.message });
-//     }
-// });
-
-
-// app.get("/contact/name", (req, res) => {
-//     const { contact_name } = req.query;
-  
-//     if (!contact_name) {
-//       return res.status(400).send({ error: "contact_name is required" });
-//     }
-  
-//     try {
-//       const query = "SELECT * FROM contact WHERE LOWER(contact_name) LIKE LOWER(?)";
-//       const searchValue = `%${contact_name}%`; // Add wildcards for partial match
-//       db.query(query, [searchValue], (err, result) => {
-//         if (err) {
-//           console.error("Error fetching contacts:", err);
-//           return res.status(500).send({ error: "Error fetching contacts" });
-//         }
-//         res.status(200).send(result);
-//       });
-//     } catch (err) {
-//       console.error({ error: "An unexpected error occurred in GET by name"+err });
-//       res.status(500).send({ error: "An unexpected error occurred in GET by name"+err });
-//     }
-//   });
-
-  
-// app.delete("/contact/:id", (req, res) => {
-//     const id = req.params.id;
-
-//     try {
-//         const query = "DELETE FROM contact WHERE id = ?";
-//         db.query(query, [id], (err, result) => {
-//             if (err) {
-//                 console.log(err);
-//                 res.status(500).send({err:"Error deleting contact"});
-//             } else if (result.affectedRows === 0) {
-//                 res.status(404).send({err:"Contact not found"});
-//             } else {
-//                 res.status(200).send("Contact deleted successfully");
-//             }
-//         });
-//     } catch (err){
-//         // Handle synchronous errors
-//         console.error("Error in DELETE /contact:", err);
-//         res.status(500).send({ error: "An unexpected error occurred in DELETE: " + err.message });
-//     }
-// });
 
 app.post("/user/login", (req, res) => {
     const { username, password } = req.body;
@@ -256,3 +176,122 @@ app.post("/user/register", (req, res) => {
     }
   });
   
+
+  /* Messages Endpoints */
+  app.post('/api/messages', (req, res) => {
+    const { email, name, message } = req.body;
+  
+    if (!email || !name || !message) {
+      return res.status(400).json({ error: 'All fields are required.' });
+    }
+  
+    const query = `INSERT INTO messages (email, name, message) VALUES (?, ?, ?)`;
+    db.query(query, [email, name, message], (err, result) => {
+      if (err) {
+        console.error('Error inserting message:', err);
+        return res.status(500).json({ error: 'Failed to save message.' });
+      }
+      res.status(200).json({ message: 'Message submitted successfully.' });
+    });
+  });
+
+  // Get all messages
+app.get('/api/messages', (req, res) => {
+    const query = `SELECT * FROM messages`;
+    db.query(query, (err, results) => {
+      if (err) {
+        console.error('Error fetching messages:', err);
+        return res.status(500).json({ error: 'Failed to fetch messages.' });
+      }
+      res.status(200).json(results);
+    });
+  });
+  
+  // Delete a specific message by ID
+  app.delete('/api/messages/:id', (req, res) => {
+    const { id } = req.params;
+    const query = `DELETE FROM messages WHERE id = ?`;
+    db.query(query, [id], (err, result) => {
+      if (err) {
+        console.error('Error deleting message:', err);
+        return res.status(500).json({ error: 'Failed to delete message.' });
+      }
+      res.status(200).json({ message: 'Message deleted successfully.' });
+    });
+  });
+
+
+  /* Join Requests */
+  app.post("/api/joinRequests", async (req, res) => {
+    const { email, name, classification } = req.body;
+    const query = "INSERT INTO joinrequests (email, name, classification) VALUES (?, ?, ?)";
+    try {
+      await db.execute(query, [email, name, classification]);
+      res.status(200).send("Join request submitted successfully.");
+    } catch (error) {
+      res.status(500).send("Error submitting join request.");
+    }
+  });
+  
+  app.get('/api/joinRequests', (req, res) => {
+    const query = `SELECT * FROM joinrequests`;
+    db.query(query, (err, results) => {
+      if (err) {
+        console.error('Error fetching join requests:', err);
+        return res.status(500).json({ error: 'Failed to fetch requests.' });
+      }
+      res.status(200).json(results);
+    });
+  });
+  
+  app.delete("/api/joinRequests/:id", async (req, res) => {
+    const query = "DELETE FROM joinrequests WHERE id = ?";
+    try {
+      await db.execute(query, [req.params.id]);
+      res.status(200).send("Join request deleted.");
+    } catch (error) {
+      res.status(500).send("Error deleting join request.");
+    }
+  });
+  
+
+  /* Member requests */
+  app.post("/api/members", async (req, res) => {
+    const { email, name, classification } = req.body;
+    const joinDate = new Date().toISOString().slice(0, 19).replace("T", " ");
+    const query = "INSERT INTO members (email, name, classification, join_date) VALUES (?, ?, ?, ?)";
+    try {
+      await db.execute(query, [email, name, classification, joinDate]);
+      res.status(200).send("Member added successfully.");
+    } catch (error) {
+      res.status(500).send("Error adding member.");
+    }
+  });
+  
+  app.get('/api/members', async (req, res) => {
+    const query = "SELECT * FROM members";
+    try {
+      // Execute the query to fetch all members
+      const [rows] = await db.promise().execute(query);
+  
+      // Respond with the members data
+      res.status(200).json(rows);
+    } catch (error) {
+      console.error("Error fetching members:", error);
+      res.status(500).send("Error fetching members.");
+    }
+  });
+
+  /* Slide Cards */
+
+  // Endpoint to fetch all slidecards data
+app.get('/api/slidecards', async (req, res) => {
+    const query = "SELECT * FROM slidecards"; // Assuming 'slidecards' is the table name
+    try {
+      const [rows] = await db.promise().execute(query);
+      res.status(200).json(rows);
+    } catch (error) {
+      console.error("Error fetching slidecards:", error);
+      res.status(500).send("Error fetching slidecards.");
+    }
+  });

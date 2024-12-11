@@ -475,7 +475,6 @@ label{
     justify-content: center;
     align-items: center;
     position: relative;
-    z-index: -1;
     border-left: 2px solid #284f13d1;
     border-right: 2px solid #284f13d1;
 }
@@ -486,7 +485,6 @@ label{
     background-position: center;
     background-repeat: no-repeat;
     position: relative;
-    z-index: -2;
 }
 
 .elementWithColorBackground {
@@ -679,3 +677,45 @@ i {
 .review-rating {
     margin-top: 5px;
 }
+
+/* Members */
+/* Bubble Container */
+.members-bubbles {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-top: 20px;
+  }
+  
+  /* Bubble Style */
+  .bubble {
+    background-color: #28a745;
+    color: white;
+    padding: 15px;
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .bubble:hover {
+    transform: scale(1.1);
+  }
+  
+  .bubble h6 {
+    font-size: 16px;
+    margin: 0;
+  }
+  
+  .bubble p {
+    font-size: 12px;
+    margin: 0;
+  }
+  

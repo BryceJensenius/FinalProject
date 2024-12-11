@@ -18,13 +18,34 @@ const About = ({ cards, setCards }) => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission here (e.g., send the data to an API)
-    console.log(formData); // Logs form data for now
-    // Reset form after submission (optional)
+  // Handle form submission
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const response = await fetch('http://localhost:8081/api/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to submit message.');
+    }
+
+    const result = await response.json();
+    console.log(result.message); // Display success message
+    // Optionally reset the form
     setFormData({ email: '', name: '', message: '' });
-  };
+    alert('Message submitted successfully!');
+  } catch (error) {
+    console.error('Error submitting the message:', error);
+    alert('Failed to submit the message. Please try again.');
+  }
+};
+
 
   return (
     <div className="backgroundWithImage">

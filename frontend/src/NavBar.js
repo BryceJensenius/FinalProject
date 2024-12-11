@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';  // Import Link and useLocation
+import { Link, useLocation } from 'react-router-dom'; // Import Link and useLocation
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const NavBar = ({ username, userRole }) => {
@@ -67,7 +67,7 @@ const NavBar = ({ username, userRole }) => {
     }
   };
 
-  // Function to check if a link is the page we are currently on, meaning it gets  highlighted
+  // Function to check if a link is the page we are currently on, meaning it gets highlighted
   const getLinkClass = (path) => {
     return location.pathname === path ? 'currentPageIcon' : '';
   };
@@ -88,7 +88,7 @@ const NavBar = ({ username, userRole }) => {
           </button>
           <ul id="navItems" ref={navItemsRef}>
             <li>
-              <Link to="/home" className={getLinkClass('/')}>Home</Link>
+              <Link to="/home" className={getLinkClass('/home')}>Home</Link>
             </li>
             <li>
               <Link to="/getInvolved" className={getLinkClass('/getInvolved')}>Get Involved</Link>
@@ -99,6 +99,17 @@ const NavBar = ({ username, userRole }) => {
             <li>
               <Link to="/aboutPage" className={getLinkClass('/aboutPage')}>Contact</Link>
             </li>
+            {/* Conditional rendering of Messages link for admin */}
+            {userRole === 'admin' && (
+              <li>
+                <Link to="/messages" className={getLinkClass('/messages')}>Messages</Link>
+              </li>
+            )}
+            {userRole === 'admin' && (
+              <li>
+                <Link to="/joinRequests" className={getLinkClass('/joinRequests')}>Join Requests</Link>
+              </li>
+            )}
           </ul>
         </nav>
       </header>

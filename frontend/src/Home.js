@@ -7,21 +7,14 @@ const Home = () => {
   const [carouselItems, setCarouselItems] = useState([]);
 
   useEffect(() => {
-    // Fetch carousel data and update state
-    fetch('data.json')
+    // Fetch carousel data from the backend
+    fetch('http://localhost:8081/api/slidecards')
       .then((response) => response.json())
       .then((data) => {
-        setCarouselItems(data.slideCards); // Update state with fetched data
+        setCarouselItems(data); // Update state with fetched data
       })
       .catch((err) => console.log('Error:', err));
   }, []); // Empty dependency array ensures this effect runs only once when the component mounts
-
-  useEffect(() => {
-    // Initialize the Bootstrap carousel after the items are loaded
-    if (carouselItems.length > 0) {
-      // const carouselElement = new bootstrap.Carousel(document.getElementById('carouselExample'));
-    }
-  }, [carouselItems]); // Re-run the effect when carouselItems changes
 
   return (
     <div>

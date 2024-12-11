@@ -10,6 +10,8 @@ import NavBar from "./NavBar.js";
 import Authentication from "./Login.js";
 import Register from "./Register.js"; // Register component import
 import Footer from "./Footer.js";
+import Messages from "./Messages.js";
+import JoinRequests from "./JoinRequests.js";
 
 function App() {
   const [cards, setCards] = useState([]);
@@ -43,6 +45,16 @@ function App() {
               <Route path="/getInvolved" element={<GetInvolved cards={cards} setCards={setCards} />} />
               <Route path="/funZone" element={<FunZone cards={cards} setCards={setCards} />} />
               <Route path="/aboutPage" element={<About cards={cards} setCards={setCards} />} />
+
+              {/* Admin-only route */}
+              {userRole === "admin" && (
+                <Route path="/messages" element={<Messages />} />
+              )}
+
+              {userRole === "admin" && (
+                <Route path="/joinRequests" element={<JoinRequests />} />
+              )}
+
             </>
           )} : {
             <Route path="*" element={<Navigate to="/" />} />
