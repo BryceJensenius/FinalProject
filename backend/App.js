@@ -295,3 +295,33 @@ app.get('/api/slidecards', async (req, res) => {
       res.status(500).send("Error fetching slidecards.");
     }
   });
+
+app.put("/treeCards/:id", (req, res) => {
+  const { id } = req.params;
+  const { heading, description, alt } = req.body;
+
+  if (!id || !heading || !description || !alt) {
+      return res.status(400).send({ error: "Missing required fields: id, heading, description, or alt." });
+  }
+
+  try {
+      const query = "UPDATE trees SET heading = ?, description = ?, alt = ? WHERE id = ?";
+      const values = [heading, description, alt, id];
+
+      db.query(query, values, (err, result) => {
+          if (err) {
+              console.error("Error updating tree card:", err);
+              return res.status(500).send({ error: "Error updating tree card: " + err });
+          }
+
+          if (result.affectedRows === 0) {
+              return res.status(404).send({ error: "Tree card not found." });
+          }
+
+          res.status(200).send({ id, heading, description, alt });
+      });
+  } catch (err) {
+      console.error("Unexpected error occurred:", err);
+      res.status(500).send({ error: "Unexpected error occurred: " + err });
+  }
+});

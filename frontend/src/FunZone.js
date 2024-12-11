@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import logo from './images/logo.jpg';
 
-const FunZone = ({ cards, setCards }) => {
+const FunZone = ({ cards, setCards, userRole }) => {
     const [aboutCards, setAboutCards] = useState([]);
     const [filters, setFilters] = useState({ searchFilter: "" });
     const [error, setError] = useState("");
     const [selectedCardReviews, setSelectedCardReviews] = useState({});
     const [reviewFormData, setReviewFormData] = useState({ description: "", rating: "", id: null });
+    const [editFormData, setEditFormData] = useState({ id: null, heading: "", description: "", alt: "" });
 
     // Function to fetch and load about cards
     const getAboutCards = async () => {
@@ -33,6 +34,32 @@ const FunZone = ({ cards, setCards }) => {
         } catch (err) {
             console.log("Failed retrieving about cards: " + err);
             setError("Failed retrieving about cards: " + err);
+        }
+    };
+
+    const handleEditSubmit = async () => {
+        try {
+            if (!editFormData.id || !editFormData.heading || !editFormData.description || !editFormData.alt) {
+                console.log("Error: Missing edit details.");
+                return;
+            }
+            const response = await fetch(`http://localhost:8081/treeCards/${editFormData.id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(editFormData),
+            });
+            if (!response.ok) {
+                console.log("Error updating card");
+                return;
+            }
+            const updatedCard = await response.json();
+            setAboutCards(prevCards =>
+                prevCards.map(card => (card.id === updatedCard.id ? updatedCard : card))
+            );
+            alert("Card updated successfully!");
+            setEditFormData({ id: null, heading: "", description: "", alt: "" });
+        } catch (err) {
+            console.log("Error updating card: ", err);
         }
     };
 
@@ -251,7 +278,72 @@ const FunZone = ({ cards, setCards }) => {
                                             >
                                                 Leave Review
                                             </button>
+
+                                            {/* Only show edit button if Admin */}
+                                            {userRole === 'admin' && (
+                                            <button
+                                                className="btn btn-warning"
+                                                onClick={() =>
+                                                    setEditFormData({
+                                                        id: card.id,
+                                                        heading: card.heading,
+                                                        description: card.description,
+                                                        alt: card.alt,
+                                                    })
+                                                }
+                                            >
+                                                Edit
+                                            </button>
+                                            )}
                                         </div>
+
+                                        {editFormData.id === card.id && (
+                                            <div className="edit-form">
+                                                <h5>Edit Card</h5>
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    placeholder="Heading"
+                                                    value={editFormData.heading}
+                                                    onChange={(e) =>
+                                                        setEditFormData((prev) => ({
+                                                            ...prev,
+                                                            heading: e.target.value,
+                                                        }))
+                                                    }
+                                                />
+                                                <textarea
+                                                    className="form-control"
+                                                    placeholder="Description"
+                                                    value={editFormData.description}
+                                                    onChange={(e) =>
+                                                        setEditFormData((prev) => ({
+                                                            ...prev,
+                                                            description: e.target.value,
+                                                        }))
+                                                    }
+                                                ></textarea>
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    placeholder="Alt Text"
+                                                    value={editFormData.alt}
+                                                    onChange={(e) =>
+                                                        setEditFormData((prev) => ({
+                                                            ...prev,
+                                                            alt: e.target.value,
+                                                        }))
+                                                    }
+                                                />
+                                                <button
+                                                    className="btn btn-success"
+                                                    onClick={handleEditSubmit}
+                                                >
+                                                    Save Changes
+                                                </button>
+                                            </div>
+                                        )}
+                                        
                                         {/* Reviews Section */}
                                         {selectedCardReviews[card.id] && (
                                             <div className="reviews-section">

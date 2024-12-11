@@ -43,7 +43,7 @@ function App() {
             <>
               <Route path="/home" element={<Home cards={cards} setCards={setCards} />} />
               <Route path="/getInvolved" element={<GetInvolved cards={cards} setCards={setCards} />} />
-              <Route path="/funZone" element={<FunZone cards={cards} setCards={setCards} />} />
+              <Route path="/funZone" element={<FunZone cards={cards} setCards={setCards} userRole={userRole}/>} />
               <Route path="/aboutPage" element={<About cards={cards} setCards={setCards} />} />
 
               {/* Admin-only route */}
