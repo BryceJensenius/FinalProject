@@ -1,0 +1,33 @@
+.green-theme-title {
+    color: #28a745;
+    font-weight: bold;
+  }
+  
+  .green-theme-table {
+    border: 1px solid #28a745;
+  }
+  
+  .green-theme-table thead {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .green-theme-table tbody tr:hover {
+    background-color: #eafaf1;
+  }
+  
+  .green-theme-table th, 
+  .green-theme-table td {
+    padding: 15px;
+    text-align: center;
+  }
+  
+  .btn-outline-success {
+    border: 1px solid #28a745;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .btn-outline-success:hover {
+    background-color: #28a745;
+    color: white;
+  }  

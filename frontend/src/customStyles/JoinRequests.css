@@ -1,0 +1,32 @@
+/* Custom styles for the JoinRequests page */
+.table th, .table td {
+    vertical-align: middle;
+  }
+  
+  .table-bordered {
+    border: 1px solid #dee2e6;
+  }
+  
+  .table-hover tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #4CAF50;
+  }
+  
+  button {
+    font-size: 14px;
+    font-weight: bold;
+  }
+  
+  button:focus {
+    outline: none;
+  }
+  
+  button.btn-sm {
+    padding: 6px 12px;
+  }
+  
