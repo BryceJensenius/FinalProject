@@ -5,24 +5,15 @@
 
 var express = require("express");
 var cors = require("cors");
-var fs = require("fs");
-var multer = require("multer");
 var bodyParser = require("body-parser");
 var app = express();
-const path = require('path');
 
 app.use(cors());
 app.use(bodyParser.json());
 
 const port = "8081";
 const host = "localhost";
-
-// Mongo DB Setup
-const { MongoClient } = require("mongodb");
-const url = "mongodb://127.0.0.1:27017";
 const dbName = "319finalproject";
-const client = new MongoClient(url);
-
 // MySql
 const mysql = require("mysql2");
 const db = mysql.createConnection({
@@ -32,30 +23,12 @@ const db = mysql.createConnection({
     database: dbName,
 });
 
-// Set up multer for image upload
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "uploads/"); // Save images in the 'uploads' folder
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
-    }
-});
-
-const upload = multer({ storage: storage });
-
-// Create "uploads" folder if it doesn't exist
-if (!fs.existsSync("uploads")) {
-    fs.mkdirSync("uploads");
-}
-
 // Server
 var app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.static("public"));
-app.use("/uploads", express.static("uploads")); // Serve images statically
 
 app.listen(port, () => {
     console.log("App listening at http://%s:%s", host, port);
