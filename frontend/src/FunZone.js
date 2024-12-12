@@ -282,7 +282,7 @@ const FunZone = ({ cards, setCards, userRole }) => {
                                             {/* Only show edit button if Admin */}
                                             {userRole === 'admin' && (
                                             <button
-                                                className="btn btn-warning"
+                                                className="leave-review btn btn-secondar"
                                                 onClick={() =>
                                                     setEditFormData({
                                                         id: card.id,

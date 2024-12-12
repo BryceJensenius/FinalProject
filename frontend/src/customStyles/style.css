@@ -164,7 +164,7 @@ header a:hover {
     border-radius: 25px;
     width: min(450px, 50vw);
     margin-bottom: 10px;
-    font-size: 20px;
+    font-size: min(20px, 2.5vw);
     display: flex;
 }
 
@@ -491,7 +491,7 @@ label{
     background-color: #e2ffd2d1;
     padding: min(40px, 5vw);
     border-radius: 80px;
-    margin: 20px;
+    margin: 10px;
     text-align: center;
     border: 3px solid #284f13d1;
 }
@@ -537,6 +537,7 @@ label{
 .card-container {
     flex-direction: column; /* Stack items vertically */
     gap: 1rem; /* Add spacing between items */
+    margin: 5px;
 }
 
 .row {
